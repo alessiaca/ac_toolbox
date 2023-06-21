@@ -18,6 +18,12 @@ def norm_perc(array):
     array_norm_perc = ((array - mean_start) / mean_start) * 100
     return array_norm_perc
 
+def norm_all(array):
+    """Normalize feature to mean of both conditions (over time)"""
+    mean = np.nanmean(array[..., :, :], axis=(-2), keepdims=True)
+    array_norm = array - mean
+    return array_norm
+
 
 def despine():
     axes = plt.gca()
