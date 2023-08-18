@@ -33,7 +33,7 @@ def despine():
 def smooth_moving_average(array, window_size=5, axis=2):
     """Return the smoothed array where values are averaged in a moving window"""
     box = np.ones(window_size) / window_size
-    array_smooth = np.apply_along_axis(lambda m: np.convolve(m, box, mode='valid'), axis=axis, arr=array)
+    array_smooth = np.apply_along_axis(lambda m: np.convolve(m, box, mode='same'), axis=axis, arr=array)
     return array_smooth
 
 
@@ -50,3 +50,18 @@ def plot_conds(array, var=None, color_slow="#00863b", color_fast="#3b0086"):
     if var is not None:
         plt.fill_between(x, array[0, :] - var[0, :], array[0, :] + var[0, :], color=color_slow, alpha=0.2)
         plt.fill_between(x, array[1, :] - var[1, :], array[1, :] + var[1, :], color=color_fast, alpha=0.2)
+
+
+def plot_bar_points_connect(matrix, colors, labels, alpha_bar=0.5, line_width=0.7):
+    """Matrix: Samples x Conditions (2)
+    Plot the mean as a bar and add points for each sample connected by a line"""
+
+    plt.bar(1, np.mean(matrix, axis=0)[0], color=colors[0], label=labels[0], width=0.5, alpha=alpha_bar)
+    plt.bar(2, np.mean(matrix, axis=0)[1], color=colors[1], label=labels[1], width=0.5, alpha=alpha_bar)
+
+    # Add points and connecting lines
+    for dat in matrix:
+        plt.plot(1, dat[0], marker='o', markersize=3, color=colors[0])
+        plt.plot(2, dat[1], marker='o', markersize=3, color=colors[1])
+        # Add line connecting the points
+        plt.plot([1, 2], dat, color="black", linewidth=line_width, alpha=0.5)
